@@ -257,6 +257,7 @@ class RecognizeEmo(AbstractState):
         
         context.latest_emo_label = emo_label
         context.latest_emo_score = num2words(emo_score)
+        context.latest_emo_score_numeric = emo_score
         context.latest_other_label = oth_label if context.tts_model.name == "parler" else "calm" if emo_label == "neutral" else "neutral"
         if context.TTS_language == "nl":
             context.latest_emo_score = num2words(emo_score, lang="nl")

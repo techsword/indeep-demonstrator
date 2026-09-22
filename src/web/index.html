@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffe9d6">
+<meta name="color-scheme" content="light">
+<title>InDeep Demonstrator</title>
+<!-- Inline icon so the page stays fully offline (no favicon.ico request). -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='26'%20fill='%23ff6b4a'/%3E%3Crect%20x='41'%20y='18'%20width='18'%20height='34'%20rx='9'%20fill='white'/%3E%3Cpath%20d='M30%2047a20%2020%200%200%200%2040%200'%20fill='none'%20stroke='white'%20stroke-width='8'%20stroke-linecap='round'/%3E%3Cpath%20d='M50%2067v13'%20stroke='white'%20stroke-width='8'%20stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+</div>
+
+<div class="shell">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="brand-text">
+        <h1>InDeep Demonstrator</h1>
+        <p data-i18n="subtitle">Talk to the computer — it can hear your feeling!</p>
+      </div>
+    </div>
+
+    <div class="lang-switch" role="group" aria-label="Language / Taal">
+      <button type="button" class="lang-btn" data-lang="en" aria-pressed="true" aria-label="English">
+        <span class="flag" aria-hidden="true">&#127468;&#127463;</span><span class="lang-name">English</span>
+      </button>
+      <button type="button" class="lang-btn" data-lang="nl" aria-pressed="false" aria-label="Nederlands">
+        <span class="flag" aria-hidden="true">&#127475;&#127473;</span><span class="lang-name">Nederlands</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+
+    <!-- ============ 1. Language screen ============ -->
+    <section class="screen screen--language" id="screenLanguage" aria-labelledby="welcomeTitle">
+      <div class="welcome">
+        <p class="kicker" data-i18n="welcomeKicker">Welcome!</p>
+        <h2 id="welcomeTitle" class="welcome-en">Which language do you speak?</h2>
+        <p class="welcome-nl" lang="nl">Welke taal spreek je?</p>
+        <p class="welcome-body" data-i18n="welcomeBody">Pick a language and I will say hello.</p>
+
+        <div class="choice-row">
+          <button type="button" class="choice" data-lang="en" aria-label="Start in English">
+            <span class="choice-flag" aria-hidden="true">&#127468;&#127463;</span>
+            <span class="choice-name">English</span>
+            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
+          </button>
+          <button type="button" class="choice" data-lang="nl" aria-label="Start in het Nederlands">
+            <span class="choice-flag" aria-hidden="true">&#127475;&#127473;</span>
+            <span class="choice-name">Nederlands</span>
+            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2. Main screen ============ -->
+    <section class="screen screen--main" id="screenMain" hidden aria-label="Talk to the computer">
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="thinking" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span id="statusText" aria-live="polite">Hold to talk</span>
+      </div>
+
+      <div class="talk-wrap" id="talkWrap">
+        <div class="level-ring" aria-hidden="true"></div>
+        <button type="button" class="talk-btn" id="talkBtn"
+                data-i18n-aria="talkAria" aria-label="Hold to talk">
+          <span class="talk-icon" aria-hidden="true">&#127908;</span>
+          <span class="talk-label" id="talkLabel" data-i18n="holdToTalk">Hold to talk</span>
+        </button>
+      </div>
+
+      <p class="hint" id="hint" role="status" aria-live="polite"></p>
+
+      <div class="result" id="result" hidden>
+        <div class="bubble">
+          <span class="bubble-label" data-i18n="youSaid">You said:</span>
+          <p class="bubble-text" id="transcriptionText"></p>
+        </div>
+        <div class="result-side">
+          <span class="emotion-badge" id="emotionBadge" hidden></span>
+          <button type="button" class="replay-btn" id="replayBtn" data-i18n="replay">&#128257; Hear that again</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="error-card" id="errorCard" role="alert" hidden>
+  <span class="error-icon" id="errorIcon" aria-hidden="true">&#127908;</span>
+  <p class="error-text" id="errorText"></p>
+  <button type="button" class="error-btn" id="errorRetry">Try again</button>
+</div>
+
+<noscript>
+  <div class="noscript">This demo needs JavaScript turned on.</div>
+</noscript>
+
+<script src="app.js"></script>
+</body>
+</html>

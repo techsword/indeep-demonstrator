@@ -4,10 +4,12 @@ from __future__ import annotations
 import os
 import shutil
 import time
+from pathlib import Path
 
 import requests
 from fastapi import FastAPI, UploadFile, Form, status
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 import demonstrator
 
@@ -37,6 +39,9 @@ def send_user_speech_request(client: demonstrator.DemonstratorClient) -> tuple[f
         
 fast_api = FastAPI()
 fast_api.demonstrator = None
+
+# Serves the web interface for the demo (optional alternative to the CLI client).
+fast_api.mount("/ui", StaticFiles(directory=Path(__file__).parent / "web", html=True), name="ui")
 
 @fast_api.get("/")
 def _API_root() -> dict:
@@ -84,6 +89,8 @@ def _API_user_speech(user_utterance: UploadFile, read_intro: bool = Form(...), T
         media_type="audio/mpeg",
         headers={
             "audio_length": str(fast_api.demonstrator.latest_tts_audio_length),
-            "transcription": fast_api.demonstrator.latest_transcription
+            "transcription": fast_api.demonstrator.latest_transcription,
+            "emotion": str(getattr(fast_api.demonstrator, "latest_emo_label", "") or ""),
+            "emotion_score": str(getattr(fast_api.demonstrator, "latest_emo_score_numeric", "") or "")
         }
     )  

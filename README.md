@@ -91,3 +91,19 @@ If the GPU is not recognized, try restarting the container:
 
 When both client and server are set up you can start the demonstrator in the client window, by typing either "e" (English) or "n" (Nederlands) and pressing Enter. This will make the demonstrator introduce itself in the chosen language. Pressing enter again makes the demonstrator listen. Whenever the participant stops talking the recorded speech is sent to the server, which then sends back a response.
 
+### Web interface (alternative to the CLI client)
+
+The server also hosts a kid-friendly web interface. With the server running, open:
+
+```
+http://127.0.0.1:8031/ui/
+```
+
+on the demo machine (a browser where `127.0.0.1:8031` is reachable, e.g. through the same SSH tunnel as the CLI client).
+
+- Pick a language (English / Nederlands) — the demo introduces itself out loud.
+- **Press and hold** the big microphone button while talking; release to send.
+- The page shows what was transcribed and which emotion was detected, and plays the spoken response.
+
+Note: microphone access in browsers requires a *secure context* — `http://127.0.0.1` and `http://localhost` count as secure, but plain-`http` LAN addresses (e.g. a tablet opening `http://192.168.x.x:8031`) do not; the browser will refuse the microphone there. Use the demo machine itself, or set up HTTPS, for microphone use.
+

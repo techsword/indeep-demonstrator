@@ -17,6 +17,9 @@ python-dotenv==1.0.1
 python-multipart==0.0.17
 PyYAML==6.0.2
 requests==2.32.3
+# Kept for dependencies that import pkg_resources on some platforms; the
+# build-environment pin lives in pyproject.toml.
+setuptools<72
 torch==2.3.1
 torchaudio==2.3.1
 tqdm==4.66.5

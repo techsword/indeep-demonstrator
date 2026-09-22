@@ -1,0 +1,10 @@
+# uv configuration for this repository.
+#
+# `uv pip install -r requirements.txt` only reads the [tool.uv] table from this
+# file (it ignores [project] and [build-system]). The build constraint below
+# pins setuptools inside the isolated PEP 517 build environments used to build
+# source distributions (e.g. parler-tts from git), where setuptools would
+# otherwise float to the latest release. setuptools 72.0.0 removed
+# `setuptools.command.test`, which older sdists still import at build time.
+[tool.uv]
+build-constraint-dependencies = ["setuptools<72"]

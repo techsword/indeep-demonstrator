@@ -36,9 +36,10 @@ Open up two Command Prompt windows. One will run the client-side application and
 
 1. Download codebase from GitHub: `git clone https://github.com/timjzee/indeep-demonstrator.git`
 2. Install Python 3.10.xx (if not installed)
-3. Create (`python3 -m venv env`) and activate (`source env/bin/activate` for Linux, `env\Scripts\activate.bat` for Windows) a Python venv in the root of the project called "env"
-4. Install libraries from requirements.txt to venv (`pip install -r requirements.txt`)
-5. Create ".env" file in project root with following contents: 
+3. On Linux, install ffmpeg (`sudo apt install ffmpeg`). The client plays the demonstrator's speech through `ffplay`, which is part of ffmpeg.
+4. Create (`python3 -m venv env`) and activate (`source env/bin/activate` for Linux, `env\Scripts\activate.bat` for Windows) a Python venv in the root of the project called "env"
+5. Install libraries from requirements.txt to venv (`pip install -r requirements.txt`)
+6. Create ".env" file in project root with following contents: 
 
 ```py 
 PYTHONPATH=.
@@ -60,7 +61,8 @@ DEMONSTRATOR_PROFILE="default"
 2. enter the demonstrator container: `sudo /etc/cncz/bin/incusexec demonstrator`
 3. create a user with the same name and password as your ponyland account: `sudo adduser username`
 4. add yourself to the `demo` group: `sudo usermod -aG demo username`
-5. logout of the container and lightning: `exit` twice
+5. On Linux, make sure ffmpeg is installed (`sudo apt install ffmpeg`). The server processes synthesised audio with `pydub`, which uses ffmpeg for mp3 decoding.
+6. logout of the container and lightning: `exit` twice
 
 #### Set up
 

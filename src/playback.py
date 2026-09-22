@@ -1,7 +1,8 @@
 """A module for playing Demonstrator audio on a client/app."""
 
 import os
-import time
+import subprocess
+import sys
 from pathlib import Path
 
 from playsound import playsound
@@ -25,7 +26,13 @@ class PlaybackModule:
             audio_length (float): The length of the temporarily stored TTS utterance in seconds.
         """
 
-        playsound(str(self.path_to_temp_tts), block=False)
-        time.sleep(audio_length)
+        if sys.platform.startswith("linux"):
+            # playsound's Linux backend (GStreamer/PyGObject) is not available in the
+            # venv and does not support block=False. ffplay blocks until playback ends.
+            subprocess.run(
+                ["ffplay", "-nodisp", "-autoexit", "-loglevel", "error",
+                 str(self.path_to_temp_tts)]
+            )
+        else:
+            playsound(str(self.path_to_temp_tts), block=True)
         os.remove(self.path_to_temp_tts)
-        

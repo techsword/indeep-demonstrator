@@ -263,15 +263,17 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
   color: var(--accent);
 }
 
-.welcome-en {
+/* The Dutch question leads the screen; English is the quieter echo. */
+.welcome-nl {
   margin: 0;
-  font-size: clamp(1.5rem, 3.6vw, 2.4rem);
-  line-height: 1.15;
+  font-size: clamp(1.75rem, 4vw, 2.7rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
-.welcome-nl {
-  margin: 6px 0 0;
-  font-size: clamp(1rem, 2.2vw, 1.35rem);
+.welcome-en {
+  margin: 8px 0 0;
+  font-size: clamp(1rem, 2.1vw, 1.25rem);
   color: var(--ink-soft);
   font-weight: 700;
 }
@@ -285,7 +287,8 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
 
 .choice-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Nederlands leads in the wider column; English keeps the smaller one. */
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: clamp(14px, 2.4vw, 26px);
   margin-top: clamp(20px, 3vw, 32px);
 }
@@ -294,6 +297,7 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: clamp(18px, 2.6vw, 30px) 14px;
   border: 3px solid var(--line);
@@ -316,6 +320,28 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
 .choice-flag { font-size: clamp(2.3rem, 5.4vw, 3.4rem); line-height: 1; }
 .choice-name { font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 800; }
 .choice-note { font-size: 0.9rem; color: var(--ink-soft); }
+
+/* Nederlands is the hero choice: wider, warmer, bigger type. */
+.choice--primary {
+  gap: 10px;
+  padding: clamp(22px, 3vw, 34px) clamp(16px, 2vw, 24px);
+  border-color: var(--accent);
+  background: radial-gradient(130% 100% at 50% 0%, #fff5ef 0%, #fff 62%);
+  box-shadow: 0 14px 0 -3px rgba(255, 107, 74, 0.32);
+}
+.choice--primary .choice-flag { font-size: clamp(2.9rem, 6.6vw, 4.1rem); }
+.choice--primary .choice-name { font-size: clamp(1.45rem, 3.1vw, 1.95rem); }
+/* --accent-sh keeps 4.9:1 contrast on the warm card. */
+.choice--primary .choice-note { color: var(--accent-sh); font-weight: 700; }
+
+/* English stays fully usable and legible, just smaller and quieter. */
+.choice--secondary {
+  padding: clamp(16px, 2.1vw, 24px) 12px;
+  color: var(--ink-soft);
+  box-shadow: 0 8px 0 -3px rgba(44, 42, 53, 0.08);
+}
+.choice--secondary .choice-flag { font-size: clamp(2rem, 4.4vw, 2.7rem); }
+.choice--secondary .choice-name { font-size: clamp(1.05rem, 2.1vw, 1.25rem); }
 
 .choice.is-loading {
   border-color: var(--amber);
@@ -723,5 +749,122 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* =========================================================
+   v2 reliability / usability additions
+   ========================================================= */
+
+.topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.server-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 26px -22px rgba(90, 60, 40, 0.8);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.server-dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: #d8d4dd;
+  transition: background 0.2s ease;
+}
+
+.server-status.is-online { color: var(--teal-dk); }
+.server-status.is-online .server-dot {
+  background: #3ec46d;
+  box-shadow: 0 0 0 4px rgba(62, 196, 109, 0.14);
+}
+
+.server-status.is-offline { color: var(--accent-dk); }
+.server-status.is-offline .server-dot {
+  background: #e2321f;
+  box-shadow: 0 0 0 4px rgba(226, 50, 31, 0.12);
+}
+
+.server-status.is-checking .server-dot {
+  background: var(--amber);
+  animation: blink 0.85s ease-in-out infinite;
+}
+
+.record-timer {
+  margin: -4px 0 0;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: rgba(44, 42, 53, 0.06);
+  color: var(--ink-soft);
+  font-size: clamp(0.82rem, 1.6vw, 0.98rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.keyboard-hint {
+  margin: -4px 0 0;
+  color: var(--ink-soft);
+  font-size: clamp(0.76rem, 1.4vw, 0.9rem);
+  font-weight: 700;
+  text-align: center;
+}
+
+.talk-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  filter: saturate(0.55) brightness(0.92);
+  transform: none !important;
+  animation: none !important;
+}
+
+.talk-btn[aria-disabled="true"]:hover { transform: none; }
+
+.stop-btn {
+  border-color: rgba(226, 50, 31, 0.28);
+}
+
+.stop-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 14px 0 -4px rgba(226, 50, 31, 0.22);
+}
+
+@media (max-width: 720px) {
+  .topbar-tools {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .server-status {
+    order: 2;
+  }
+
+  .lang-switch {
+    order: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

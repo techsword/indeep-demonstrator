@@ -1,6 +1,8 @@
 """Defines the types of Demonstrators that can be run: clients, servers, and apps."""
 
 from abc import ABC
+import queue
+
 from playback import PlaybackModule
 
 import numpy as np
@@ -68,7 +70,8 @@ class DemonstratorServer(Demonstrator):
     Attributes:
         asr_model: An Automatic Speech Recognition model form the `asr` module that transcribes user utterances.
         tts_model: A Text-to-Speech model from the `tts` module that synthesizes speech.
-        passed_server_response_barrier: A check on whether the server is allowed to send a response to the client, True when in the `RESTResponse` state.
+        request_queue: Queue of REST requests waiting to be processed by the state machine.
+        current_request: The REST request currently being processed, if any.
     """
 
     def __init__(self, asr_model: ASRModel, tts_model: TTSModel, fast_tts_model: TTSModel, ser_model: SERModel):
@@ -79,7 +82,10 @@ class DemonstratorServer(Demonstrator):
         self.fast_tts_model: TTSModel = fast_tts_model
         self.ser_model: SERModel = ser_model
 
-        self.passed_server_response_barrier: bool = False
+        # Requests are queued so multiple browser tabs or clients can never
+        # overwrite each other's audio or receive someone else's response.
+        self.request_queue: queue.Queue = queue.Queue()
+        self.current_request: dict | None = None
 
 class DemonstratorApp(Demonstrator):
     """A standalone application that runs the entire Demonstrator process locally.

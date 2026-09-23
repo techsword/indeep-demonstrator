@@ -398,39 +398,72 @@ class RESTRequest(AbstractState):
 class RESTAwait(AbstractState):
     """Instructs a Demonstrator server to wait for an incoming REST request from a client."""
 
-    def handle(self, context: demonstrator.DemonstratorServer):       
+    def handle(self, context: demonstrator.DemonstratorServer):
         """Runs the state's logic.
 
         Args:
-            context (demonstrator.Demonstrator): The Demonstrator instance to which the state is assigned.
+            context (demonstrator.Demonstrator): The Demonstrator instance to which this state is assigned.
         """
-            
-        print("I'm awaiting a request from the client...")
-        
-        while context.latest_user_utterance is None:
-            time.sleep(.1)
 
-        print(" Request received!")
-        
+        print("I'm awaiting a request from the client...")
+
+        # Blocks the server's state-machine thread until a request arrives.
+        # The API endpoint enqueues a request object and waits on its event,
+        # so a timed-out HTTP request can never corrupt a later turn.
+        request = context.request_queue.get()
+
+        context.current_request = request
+        context.latest_user_utterance = request["input_path"]
+        context.read_intro = request["read_intro"]
+        context.TTS_language = request["tts_language"]
+
+        print(f" Request received! ({request.get('id', 'unknown')})")
+
         context.state = Transcribe()
+
 
 class RESTResponse(AbstractState):
     """Instructs a Demonstrator server to send a REST response to the client.
-    
-    Instructs a Demonstrator server to send a REST response to the client.
-    Also cleans the Demonstrator server up by emptying the CUDA cache and emptying the latest user utterance."""
+
+    The response is copied into the request object and the request-specific
+    event is set. The API endpoint may already have timed out; in that case the
+    state machine still cleans the input file and simply drops the response.
+    """
 
     def handle(self, context: demonstrator.DemonstratorServer):
         """Runs the state's logic.
 
         Args:
-            context (demonstrator.Demonstrator): The Demonstrator instance to which the state is assigned.
+            context (demonstrator.Demonstrator): The Demonstrator instance to which this state is assigned.
         """
 
         print("I'm sending a REST response to the client...")
-        
-        context.passed_server_response_barrier = True
+
+        request = context.current_request
+        try:
+            if request is not None:
+                with open(context.tts_model.path_to_temp_tts, "rb") as tts_stream:
+                    request["audio_bytes"] = tts_stream.read()
+                request["audio_length"] = context.latest_tts_audio_length
+                request["transcription"] = context.latest_transcription
+                request["emotion"] = getattr(context, "latest_emo_label", "") or ""
+                request["emotion_score"] = getattr(context, "latest_emo_score_numeric", "") or ""
+        except Exception as exc:  # pragma: no cover - defensive path for a live demo
+            if request is not None:
+                request["error"] = str(exc)
+            print(f"Could not prepare REST response: {exc}")
+        finally:
+            if request is not None:
+                input_path = request.get("input_path")
+                if input_path:
+                    try:
+                        os.remove(input_path)
+                    except OSError:
+                        pass
+                request["event"].set()
+                context.current_request = None
+
         context.latest_user_utterance = None
         torch.cuda.empty_cache()
-        
+
         context.state = RESTAwait()

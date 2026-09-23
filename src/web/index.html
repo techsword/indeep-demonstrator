@@ -29,13 +29,20 @@
       </div>
     </div>
 
-    <div class="lang-switch" role="group" aria-label="Language / Taal">
-      <button type="button" class="lang-btn" data-lang="en" aria-pressed="true" aria-label="English">
-        <span class="flag" aria-hidden="true">&#127468;&#127463;</span><span class="lang-name">English</span>
-      </button>
-      <button type="button" class="lang-btn" data-lang="nl" aria-pressed="false" aria-label="Nederlands">
-        <span class="flag" aria-hidden="true">&#127475;&#127473;</span><span class="lang-name">Nederlands</span>
-      </button>
+    <div class="topbar-tools">
+      <div class="server-status is-unknown" id="serverStatus" role="status" aria-live="polite">
+        <span class="server-dot" aria-hidden="true"></span>
+        <span id="serverStatusText" data-i18n="serverConnecting">Connecting…</span>
+      </div>
+
+      <div class="lang-switch" role="group" aria-label="Language / Taal">
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="true" aria-label="English">
+          <span class="flag" aria-hidden="true">&#127468;&#127463;</span><span class="lang-name">English</span>
+        </button>
+        <button type="button" class="lang-btn" data-lang="nl" aria-pressed="false" aria-label="Nederlands">
+          <span class="flag" aria-hidden="true">&#127475;&#127473;</span><span class="lang-name">Nederlands</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -45,19 +52,19 @@
     <section class="screen screen--language" id="screenLanguage" aria-labelledby="welcomeTitle">
       <div class="welcome">
         <p class="kicker" data-i18n="welcomeKicker">Welcome!</p>
-        <h2 id="welcomeTitle" class="welcome-en">Which language do you speak?</h2>
-        <p class="welcome-nl" lang="nl">Welke taal spreek je?</p>
+        <h2 id="welcomeTitle" class="welcome-nl" lang="nl">Welke taal spreek je?</h2>
+        <p class="welcome-en" lang="en">Which language do you speak?</p>
         <p class="welcome-body" data-i18n="welcomeBody">Pick a language and I will say hello.</p>
 
         <div class="choice-row">
-          <button type="button" class="choice" data-lang="en" aria-label="Start in English">
-            <span class="choice-flag" aria-hidden="true">&#127468;&#127463;</span>
-            <span class="choice-name">English</span>
-            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
-          </button>
-          <button type="button" class="choice" data-lang="nl" aria-label="Start in het Nederlands">
+          <button type="button" class="choice choice--primary" data-lang="nl" aria-label="Start in het Nederlands">
             <span class="choice-flag" aria-hidden="true">&#127475;&#127473;</span>
             <span class="choice-name">Nederlands</span>
+            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
+          </button>
+          <button type="button" class="choice choice--secondary" data-lang="en" aria-label="Start in English">
+            <span class="choice-flag" aria-hidden="true">&#127468;&#127463;</span>
+            <span class="choice-name">English</span>
             <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
           </button>
         </div>
@@ -72,16 +79,19 @@
         <span id="statusText" aria-live="polite">Hold to talk</span>
       </div>
 
+      <p class="record-timer" id="recordTimer" hidden aria-live="off">0:00 / 0:20</p>
+
       <div class="talk-wrap" id="talkWrap">
         <div class="level-ring" aria-hidden="true"></div>
         <button type="button" class="talk-btn" id="talkBtn"
-                data-i18n-aria="talkAria" aria-label="Hold to talk">
+                data-i18n-aria="talkAria" aria-label="Hold to talk" aria-describedby="hint">
           <span class="talk-icon" aria-hidden="true">&#127908;</span>
           <span class="talk-label" id="talkLabel" data-i18n="holdToTalk">Hold to talk</span>
         </button>
       </div>
 
       <p class="hint" id="hint" role="status" aria-live="polite"></p>
+      <p class="keyboard-hint" id="keyboardHint" data-i18n="keyboardHint">Tip: hold Space or Enter to talk.</p>
 
       <div class="result" id="result" hidden>
         <div class="bubble">
@@ -91,6 +101,7 @@
         <div class="result-side">
           <span class="emotion-badge" id="emotionBadge" hidden></span>
           <button type="button" class="replay-btn" id="replayBtn" data-i18n="replay">&#128257; Hear that again</button>
+          <button type="button" class="replay-btn stop-btn" id="stopPlaybackBtn" data-i18n="stopPlayback" hidden>&#9209; Stop</button>
         </div>
       </div>
     </section>
@@ -98,10 +109,10 @@
   </main>
 </div>
 
-<div class="error-card" id="errorCard" role="alert" hidden>
+<div class="error-card" id="errorCard" role="alert" aria-live="assertive" hidden>
   <span class="error-icon" id="errorIcon" aria-hidden="true">&#127908;</span>
   <p class="error-text" id="errorText"></p>
-  <button type="button" class="error-btn" id="errorRetry">Try again</button>
+  <button type="button" class="error-btn" id="errorRetry" data-i18n="tryAgain">Try again</button>
 </div>
 
 <noscript>

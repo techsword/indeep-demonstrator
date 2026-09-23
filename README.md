@@ -101,9 +101,12 @@ http://127.0.0.1:8031/ui/
 
 on the demo machine (a browser where `127.0.0.1:8031` is reachable, e.g. through the same SSH tunnel as the CLI client).
 
-- Pick a language (English / Nederlands) — the demo introduces itself out loud.
+- Pick a language (Nederlands / English) — the demo introduces itself out loud.
 - **Press and hold** the big microphone button while talking; release to send.
 - The page shows what was transcribed and which emotion was detected, and plays the spoken response.
+- Live-demo safeguards: request timeouts with an explicit retry path, one queued request per turn on the server (tabs or clients cannot overwrite each other's audio), immediate transcription/emotion feedback before playback finishes, connection status, recording timer, stop-playback control, microphone-error recovery, keyboard support (hold Space/Enter), and reduced-motion support.
 
 Note: microphone access in browsers requires a *secure context* — `http://127.0.0.1` and `http://localhost` count as secure, but plain-`http` LAN addresses (e.g. a tablet opening `http://192.168.x.x:8031`) do not; the browser will refuse the microphone there. Use the demo machine itself, or set up HTTPS, for microphone use.
+
+The API request wait is 300 seconds by default. It can be overridden with the `DEMONSTRATOR_API_TIMEOUT` environment variable if a slower server needs more time.
 

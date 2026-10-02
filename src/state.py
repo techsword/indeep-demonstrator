@@ -96,7 +96,7 @@ class Intro(AbstractState):
                 intro_text = "Hi, I am the InDeep demo! Please say something with emotion, and I'll try to guess which emotion it was."
                 context.emo_list = list(emo_dict.keys())
             
-            audio_length = context.tts_model.synthesize(intro_text, "neutral", context.TTS_language)
+            context.latest_tts_audio_length = context.tts_model.synthesize(intro_text, "neutral", context.TTS_language)
             context.state = Speak()
 
 
@@ -293,7 +293,7 @@ class Synthesize(AbstractState):
         context.emo_list.remove(context.latest_emo_label) if context.latest_emo_label in context.emo_list else None
         if len(context.emo_list) == 0:
             context.emo_list = list(emo_dict.keys()) if context.TTS_language == "en" else list(emo_dict.values())
-            context.emo_list.remove(context.latest_emo_label)
+            context.emo_list.remove(context.latest_emo_label) if context.latest_emo_label in context.emo_list else None
 
         emo_sug = random.choice(context.emo_list)
         context.emo_list.remove(emo_sug)
@@ -359,7 +359,7 @@ class SayGoodbye(AbstractState):
         print("I'm saying goodbye...")
         
         if isinstance(context, demonstrator.DemonstratorApp):
-            audio_length = context.tts_model.say_goodbye()
+            audio_length = context.tts_model.say_goodbye(context.TTS_language)
             context.playback_module.playback(audio_length)
         
         print("Metrics:")

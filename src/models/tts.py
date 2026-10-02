@@ -68,14 +68,17 @@ class TTSModel(AbstractModel):
 
         raise NotImplementedError("TTSModel class is abstract, please use an implementation.")
     
-    def say_goodbye(self) -> float:
+    def say_goodbye(self, language: str) -> float:
         """Randomly selects a goodbye message and synthesizes audio for it.
+
+        Args:
+            language (str): The language in which the goodbye message should be synthesized.
 
         Returns:
             float: The length of the synthesized audio in seconds.
         """
 
-        return self.synthesize(random.choice(self.goodbye_texts))
+        return self.synthesize(random.choice(self.goodbye_texts), "neutral", language)
         
 class MMS(TTSModel):
     """A `TTSModel` implementation that uses Facebook's MMS-TTS model to synthesize audio.

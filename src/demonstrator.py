@@ -202,14 +202,19 @@ class DemonstratorFactory:
                 self.asr_model = FasterWhisper(device=self.device, model_size=self.config["asr"]["model_size"], language=language)
                 
         if "tts" in self.config.keys():
-            if self.config["tts"]["name"] == "mms":
+            tts_name = self.config["tts"]["name"]
+
+            if tts_name in ("mms", "mms_tts"):
                 self.tts_model = MMS(device=self.device)
                 
-            if self.config["tts"]["name"] == "piper":
+            elif tts_name == "piper":
                 self.tts_model = Piper(device=self.device)
             
-            if self.config["tts"]["name"] == "parler":
+            elif tts_name == "parler":
                 self.tts_model = Parler(device=self.device)
+
+            else:
+                raise ValueError(f"Unknown TTS model: {tts_name}")
         
             self.fast_tts_model = MMS(device=self.device)
         

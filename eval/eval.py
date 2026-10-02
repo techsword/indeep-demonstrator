@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).parents[1]
 HF_CACHE_PATH = Path(PROJECT_ROOT, ".cache", "huggingface")
-os.environ["HF_HOME"] = HF_CACHE_PATH
+os.environ["HF_HOME"] = str(HF_CACHE_PATH)
 
 # This is a bodge/malpractice but the imports will not work without it.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -66,7 +66,7 @@ def asr_evaluation(eval_config: dict, device: str) -> tuple[pd.DataFrame, pd.Dat
             audio_path = Path(EVAL_DATA_ROOT, audio_metadata["filename"])
             starting_timestamp = time.time()
             
-            prediction, audio_length = asr_model.transcribe(audio_path, print_transcription=False)
+            prediction, audio_length, _ = asr_model.transcribe(audio_path, print_transcription=False)
             
             ending_timestamp = time.time()
             real_time_factor = src.metrics.real_time_factor(

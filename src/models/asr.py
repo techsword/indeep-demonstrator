@@ -96,7 +96,7 @@ class FasterWhisper(ASRModel):
             "nl": [i for i in range(tokenizer["nl"].eot) if all(char in "0123456789" for char in tokenizer["nl"].decode([i]).removeprefix(" "))]
             }
     
-    def transcribe(self, audio: torch.Tensor | Path | str, print_transcription: bool = True) -> tuple[str, float]:
+    def transcribe(self, audio: torch.Tensor | Path | str, print_transcription: bool = True) -> tuple[str, float, str]:
         """Transcribes a user utterance using the FasterWhisper model.
 
         Args:
@@ -104,7 +104,7 @@ class FasterWhisper(ASRModel):
             print_transcription (bool, optional): Whether or not to print the transcription to the console. Defaults to True.
 
         Returns:
-            tuple[str, float]: The transcription and length of the audio that was transcribed in seconds.
+            tuple[str, float, str]: The transcription, length of the audio that was transcribed in seconds, and the detected language.
         """
 
         with torch.no_grad():

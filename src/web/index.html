@@ -30,6 +30,12 @@
     </div>
 
     <div class="topbar-tools">
+      <button type="button" class="how-link" id="howOpen"
+              data-i18n-aria="howOpenAria" aria-label="How does it work?">
+        <span class="how-link-icon" aria-hidden="true">&#128161;</span>
+        <span class="how-link-text" data-i18n="howOpen">How does it work?</span>
+      </button>
+
       <div class="server-status is-unknown" id="serverStatus" role="status" aria-live="polite">
         <span class="server-dot" aria-hidden="true"></span>
         <span id="serverStatusText" data-i18n="serverConnecting">Connecting…</span>
@@ -60,12 +66,12 @@
           <button type="button" class="choice choice--primary" data-lang="nl" aria-label="Start in het Nederlands">
             <span class="choice-flag" aria-hidden="true">&#127475;&#127473;</span>
             <span class="choice-name">Nederlands</span>
-            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
+            <span class="choice-note">Tik om te beginnen</span>
           </button>
           <button type="button" class="choice choice--secondary" data-lang="en" aria-label="Start in English">
             <span class="choice-flag" aria-hidden="true">&#127468;&#127463;</span>
             <span class="choice-name">English</span>
-            <span class="choice-note" data-i18n="choiceNote">Tap to start</span>
+            <span class="choice-note">Tap to start</span>
           </button>
         </div>
       </div>
@@ -103,6 +109,87 @@
           <button type="button" class="replay-btn" id="replayBtn" data-i18n="replay">&#128257; Hear that again</button>
           <button type="button" class="replay-btn stop-btn" id="stopPlaybackBtn" data-i18n="stopPlayback" hidden>&#9209; Stop</button>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. How it works screen ============ -->
+    <section class="screen screen--how" id="screenHow" hidden aria-labelledby="howTitle">
+      <div class="how-inner">
+
+        <div class="how-topbar">
+          <button type="button" class="how-back" id="howBack" data-i18n="howBack">&#8592; Back</button>
+        </div>
+
+        <div class="how-head">
+          <h2 id="howTitle" class="how-title" data-i18n="howTitle">How does it work?</h2>
+          <p class="how-sub" data-i18n="howSub">You talk — the computer listens, understands, feels, and talks back.</p>
+        </div>
+
+        <div class="how-steps">
+          <div class="how-step how-step--1">
+            <span class="how-step-num" aria-hidden="true">1</span>
+            <span class="how-step-icon" aria-hidden="true">&#127908;</span>
+            <h3 class="how-step-title" data-i18n="howStep1Title">Listen</h3>
+            <p class="how-step-text" data-i18n="howStep1Text">Hold the big button and say something. The app waits for your voice and records it.</p>
+            <div class="how-step-tech">Silero VAD</div>
+          </div>
+
+          <span class="how-arrow" aria-hidden="true">&#10132;</span>
+
+          <div class="how-step how-step--2">
+            <span class="how-step-num" aria-hidden="true">2</span>
+            <span class="how-step-icon" aria-hidden="true">&#9997;&#65039;</span>
+            <h3 class="how-step-title" data-i18n="howStep2Title">Understand</h3>
+            <p class="how-step-text" data-i18n="howStep2Text">Your speech is turned into words, so the computer knows what you said.</p>
+            <div class="how-step-tech">Whisper ASR</div>
+          </div>
+
+          <span class="how-arrow" aria-hidden="true">&#10132;</span>
+
+          <div class="how-step how-step--3">
+            <span class="how-step-num" aria-hidden="true">3</span>
+            <span class="how-step-icon" aria-hidden="true">&#128155;</span>
+            <h3 class="how-step-title" data-i18n="howStep3Title">Feel</h3>
+            <p class="how-step-text" data-i18n="howStep3Text">The computer guesses how you said it — happy, sad, angry, surprised…</p>
+            <div class="how-step-tech">wav2vec2 emotion</div>
+          </div>
+
+          <span class="how-arrow" aria-hidden="true">&#10132;</span>
+
+          <div class="how-step how-step--4">
+            <span class="how-step-num" aria-hidden="true">4</span>
+            <span class="how-step-icon" aria-hidden="true">&#128266;</span>
+            <h3 class="how-step-title" data-i18n="howStep4Title">Talk back</h3>
+            <p class="how-step-text" data-i18n="howStep4Text">It answers out loud, matching the feeling it heard in your voice.</p>
+            <div class="how-step-tech">Piper / MMS TTS</div>
+          </div>
+        </div>
+
+        <div class="how-journey">
+          <h3 data-i18n="howJourneyTitle">Where does your voice go?</h3>
+          <div class="how-hops">
+            <div class="how-hop how-hop--you">
+              <span data-i18n="howHop1">This laptop</span>
+              <small data-i18n="howHop1Note">records &amp; plays sound</small>
+            </div>
+            <span class="how-hop-arrow" aria-hidden="true">&#10132;</span>
+            <div class="how-hop how-hop--tunnel">
+              <span data-i18n="howHop2">Secure tunnel</span>
+              <small data-i18n="howHop2Note">your voice travels safely</small>
+            </div>
+            <span class="how-hop-arrow" aria-hidden="true">&#10132;</span>
+            <div class="how-hop how-hop--gpu">
+              <span data-i18n="howHop3">University computer</span>
+              <small data-i18n="howHop3Note">a big GPU does the thinking</small>
+            </div>
+            <span class="how-hop-arrow" aria-hidden="true">&#10132;</span>
+            <div class="how-hop how-hop--you">
+              <span data-i18n="howHop4">This laptop</span>
+              <small data-i18n="howHop4Note">you hear the answer</small>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 

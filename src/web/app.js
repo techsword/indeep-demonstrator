@@ -41,7 +41,6 @@
       subtitle:          'Talk to the computer — it can hear your feeling!',
       welcomeKicker:     'Welcome!',
       welcomeBody:       'Pick a language and I will say hello.',
-      choiceNote:        'Tap to start',
       holdToTalk:        'Hold to talk',
       gettingReady:      'Getting ready…',
       listening:         'Listening…',
@@ -69,13 +68,34 @@
       serverOnline:      'Demo server connected',
       serverConnecting:  'Connecting…',
       tryAgain:          'Try again',
-      errorIcon:         '🎤'
+      errorIcon:         '🎤',
+      howOpen:           'How does it work?',
+      howOpenAria:       'How does it work? Read the steps and follow your voice.',
+      howBack:           '← Back to the demo',
+      howTitle:          'How does it work?',
+      howSub:            'You talk — the computer listens, understands, feels, and talks back.',
+      howStep1Title:     'Listen',
+      howStep1Text:      'Hold the big button and say something. The app waits for your voice and records it.',
+      howStep2Title:     'Understand',
+      howStep2Text:      'Your speech is turned into words, so the computer knows what you said.',
+      howStep3Title:     'Feel',
+      howStep3Text:      'The computer guesses how you said it — happy, sad, angry, surprised…',
+      howStep4Title:     'Talk back',
+      howStep4Text:      'It answers out loud, matching the feeling it heard in your voice.',
+      howJourneyTitle:   'Where does your voice go?',
+      howHop1:           'This laptop',
+      howHop1Note:       'records & plays sound',
+      howHop2:           'Secure tunnel',
+      howHop2Note:       'your voice travels safely',
+      howHop3:           'University computer',
+      howHop3Note:       'a big GPU does the thinking',
+      howHop4:           'This laptop',
+      howHop4Note:       'you hear the answer'
     },
     nl: {
       subtitle:          'Praat tegen de computer — hij hoort hoe je je voelt!',
       welcomeKicker:     'Welkom!',
       welcomeBody:       'Kies een taal en ik zeg hallo.',
-      choiceNote:        'Tik om te beginnen',
       holdToTalk:        'Houd ingedrukt',
       gettingReady:      'Even geduld…',
       listening:         'Ik luister…',
@@ -103,7 +123,29 @@
       serverOnline:      'Demo-server verbonden',
       serverConnecting:  'Verbinden…',
       tryAgain:          'Opnieuw proberen',
-      errorIcon:         '🎤'
+      errorIcon:         '🎤',
+      howOpen:           'Hoe werkt het?',
+      howOpenAria:       'Hoe werkt het? Lees de stappen en volg je stem.',
+      howBack:           '← Terug naar de demo',
+      howTitle:          'Hoe werkt het?',
+      howSub:            'Jij praat — de computer luistert, begrijpt, voelt en praat terug.',
+      howStep1Title:     'Luisteren',
+      howStep1Text:      'Houd de grote knop ingedrukt en zeg iets. De app wacht op je stem en neemt op.',
+      howStep2Title:     'Begrijpen',
+      howStep2Text:      'Je spraak wordt omgezet in woorden, zodat de computer weet wát je zei.',
+      howStep3Title:     'Voelen',
+      howStep3Text:      'De computer raadt hóe je het zei — blij, verdrietig, boos, verrast…',
+      howStep4Title:     'Terugpraten',
+      howStep4Text:      'Hij antwoordt hardop, passend bij het gevoel in jouw stem.',
+      howJourneyTitle:   'Waar gaat jouw stem heen?',
+      howHop1:           'Deze laptop',
+      howHop1Note:       'neemt op en speelt af',
+      howHop2:           'Beveiligde tunnel',
+      howHop2Note:       'jouw stem reist veilig',
+      howHop3:           'Computer van de universiteit',
+      howHop3Note:       'een grote GPU doet het denkwerk',
+      howHop4:           'Deze laptop',
+      howHop4Note:       'jij hoort het antwoord'
     }
   };
 
@@ -133,6 +175,7 @@
 
   var screenLanguage      = document.getElementById('screenLanguage');
   var screenMain          = document.getElementById('screenMain');
+  var screenHow           = document.getElementById('screenHow');
   var statusPill          = document.getElementById('statusPill');
   var statusText          = document.getElementById('statusText');
   var talkWrap            = document.getElementById('talkWrap');
@@ -152,6 +195,8 @@
   var errorRetry          = document.getElementById('errorRetry');
   var serverStatus        = document.getElementById('serverStatus');
   var serverStatusText    = document.getElementById('serverStatusText');
+  var howOpen             = document.getElementById('howOpen');
+  var howBack             = document.getElementById('howBack');
 
   var langButtons = Array.prototype.slice.call(document.querySelectorAll('[data-lang]'));
   var choiceButtons = Array.prototype.slice.call(document.querySelectorAll('.choice'));
@@ -163,6 +208,7 @@
   var phase = 'language';        // language | intro | idle | recording | thinking | speaking
   var currentLang = 'nl';
   var strings = STRINGS.en;
+  var howReturn = 'language';    // screen to return to when leaving "How it works"
   var lastBlob = null;
   var lastResult = null;
   var lastAction = null;         // action to retry after an error
@@ -270,10 +316,25 @@
   }
 
   function showScreen(name) {
-    var main = name === 'main';
-    screenLanguage.hidden = main;
-    screenMain.hidden = !main;
-    if (main) restartAnimation(screenMain);
+    screenLanguage.hidden = name !== 'language';
+    screenMain.hidden = name !== 'main';
+    screenHow.hidden = name !== 'how';
+    if (name === 'main') {
+      restartAnimation(screenMain);
+      // Put keyboard focus on the talk button, so Space/Enter reach it even
+      // when the previous screen (e.g. a language choice) kept focus.
+      focusTalkButton();
+    }
+    if (name === 'how') restartAnimation(screenHow);
+  }
+
+  function focusTalkButton() {
+    if (!talkBtn || !talkBtn.focus) return;
+    try {
+      talkBtn.focus({ preventScroll: true });
+    } catch (e) {
+      try { talkBtn.focus(); } catch (e2) { /* ignore */ }
+    }
   }
 
   function decodeHeaderValue(raw) {
@@ -1173,15 +1234,47 @@
 
   talkBtn.addEventListener('contextmenu', function (event) { event.preventDefault(); });
 
-  talkBtn.addEventListener('keydown', function (event) {
+  /* Keyboard hold-to-talk.
+     Bound to the document, not the button, so it works even when focus sits
+     elsewhere (e.g. on a language choice that is now hidden). It only acts on
+     the main screen and defers to real text fields and other controls. */
+
+  function isTypingTarget(el) {
+    if (!el) return false;
+    var tag = el.tagName ? el.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return true;
+    return !!el.isContentEditable;
+  }
+
+  function isOtherControl(el) {
+    if (!el || el === talkBtn) return false;
+    var tag = el.tagName ? el.tagName.toLowerCase() : '';
+    if (tag === 'button' || tag === 'a' || tag === 'summary') return true;
+    return !!(el.getAttribute && el.getAttribute('role') === 'button');
+  }
+
+  function shouldIgnoreKey(event) {
+    if (screenMain.hidden) return true;                        // language / how screen
+    if (event.ctrlKey || event.metaKey || event.altKey) return true;  // browser shortcuts
+    var el = event.target;
+    if (isTypingTarget(el)) return true;                       // typing fields
+    if (isOtherControl(el)) return true;                       // buttons & links keep their key
+    return false;
+  }
+
+  document.addEventListener('keydown', function (event) {
     if (event.key !== ' ' && event.key !== 'Spacebar' && event.key !== 'Enter') return;
+    if (shouldIgnoreKey(event)) return;
     if (event.repeat) { event.preventDefault(); return; }
-    event.preventDefault();
+    event.preventDefault();                                    // never scroll the page
     onPressStart(null);
   });
 
-  talkBtn.addEventListener('keyup', function (event) {
+  document.addEventListener('keyup', function (event) {
     if (event.key !== ' ' && event.key !== 'Spacebar' && event.key !== 'Enter') return;
+    if (screenMain.hidden) return;
+    // Always release a hold we started, wherever focus went in the meantime.
+    if (!holding && !micPending) return;
     event.preventDefault();
     onPressEnd();
   });
@@ -1205,8 +1298,34 @@
       var lang = btn.getAttribute('data-lang');
       if (!lang) return;
       if (phase === 'recording' || phase === 'intro' || phase === 'thinking' || micPending) return;
+      // On the "How it works" page, just flip the language and stay reading.
+      if (!screenHow.hidden) {
+        applyLanguage(lang);
+        return;
+      }
       startIntro(lang);
     });
+  });
+
+  /* ---------------------------------------------------------
+     "How it works" page
+     --------------------------------------------------------- */
+
+  function openHow() {
+    if (!screenHow.hidden) return;   // already reading it
+    // Don't interrupt an active turn to show the explainer.
+    if (phase === 'recording' || phase === 'intro' || phase === 'thinking' || micPending) return;
+    howReturn = screenMain.hidden ? 'language' : 'main';
+    stopPlayback();
+    showScreen('how');
+    if (window.scrollTo) window.scrollTo(0, 0);
+  }
+
+  howOpen.addEventListener('click', openHow);
+
+  howBack.addEventListener('click', function () {
+    showScreen(howReturn);
+    if (window.scrollTo) window.scrollTo(0, 0);
   });
 
   /* ---------------------------------------------------------

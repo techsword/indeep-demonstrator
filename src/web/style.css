@@ -868,3 +868,246 @@ body.has-error .shell { padding-bottom: clamp(180px, 30vh, 260px); }
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   "How it works" page
+   ========================================================= */
+
+.how-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 26px -22px rgba(90, 60, 40, 0.8);
+  font: inherit;
+  font-weight: 800;
+  font-size: clamp(0.85rem, 1.5vw, 0.98rem);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: transform 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.how-link:hover {
+  color: var(--accent-dk);
+  background: #fff;
+  transform: translateY(-2px);
+}
+.how-link:active { transform: translateY(1px); }
+
+.how-link-icon { font-size: 1.05rem; line-height: 1; }
+
+/* ---- layout ---- */
+
+.screen--how { display: flex; justify-content: center; }
+
+.how-inner {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vw, 32px);
+  padding-bottom: 0.5vh;
+}
+
+/* stagger the sections in when the page opens */
+.screen--how.enter > .how-inner > * {
+  animation: rise 0.5s both cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.screen--how.enter > .how-inner > *:nth-child(1) { animation-delay: 0.02s; }
+.screen--how.enter > .how-inner > *:nth-child(2) { animation-delay: 0.08s; }
+.screen--how.enter > .how-inner > *:nth-child(3) { animation-delay: 0.16s; }
+.screen--how.enter > .how-inner > *:nth-child(4) { animation-delay: 0.24s; }
+
+/* ---- back button ---- */
+
+.how-topbar { display: flex; justify-content: flex-start; }
+
+.how-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-weight: 800;
+  font-size: clamp(0.88rem, 1.6vw, 1rem);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 9px 0 -3px rgba(44, 42, 53, 0.10);
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.how-back:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 0 -4px rgba(255, 107, 74, 0.25);
+}
+.how-back:active { transform: translateY(2px); }
+
+/* ---- heading ---- */
+
+.how-head { text-align: center; }
+
+.how-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+}
+
+.how-sub {
+  margin: 10px auto 0;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  font-size: clamp(0.98rem, 2vw, 1.15rem);
+  font-weight: 700;
+}
+
+/* ---- the four steps ---- */
+
+.how-steps {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(10px, 1.6vw, 18px);
+  flex-wrap: wrap;
+}
+
+.how-arrow {
+  align-self: center;
+  color: var(--ink-soft);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.how-step {
+  position: relative;
+  flex: 1 1 200px;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: clamp(22px, 2.4vw, 28px) clamp(16px, 1.8vw, 22px);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 26px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.how-step-num {
+  position: absolute;
+  top: -14px;
+  left: -10px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 6px 0 -2px rgba(44, 42, 53, 0.2);
+}
+
+.how-step--1 .how-step-num { background: var(--accent); }
+.how-step--2 .how-step-num { background: var(--sky); }
+.how-step--3 .how-step-num { background: var(--amber); }
+.how-step--4 .how-step-num { background: var(--teal); }
+
+.how-step-icon { font-size: clamp(2rem, 4.4vw, 2.6rem); line-height: 1; }
+
+.how-step-title {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.25rem);
+}
+
+.how-step-text {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: clamp(0.84rem, 1.6vw, 0.94rem);
+  line-height: 1.45;
+}
+
+.how-step-tech {
+  margin-top: 6px;
+  padding-top: 10px;
+  width: 100%;
+  border-top: 1px dashed var(--line);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: clamp(0.68rem, 1.3vw, 0.76rem);
+  color: var(--ink-soft);
+}
+
+/* ---- the voice journey strip ---- */
+
+.how-journey {
+  padding: clamp(18px, 2.4vw, 28px);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 26px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.how-journey h3 {
+  margin: 0 0 clamp(14px, 2vw, 20px);
+  text-align: center;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+}
+
+.how-hops {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.4vw, 14px);
+  flex-wrap: wrap;
+}
+
+.how-hop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 18px;
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  font-weight: 800;
+  font-size: clamp(0.85rem, 1.6vw, 0.98rem);
+  text-align: center;
+}
+
+.how-hop small {
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-size: clamp(0.7rem, 1.3vw, 0.78rem);
+}
+
+.how-hop--you { border-color: var(--accent); }
+.how-hop--tunnel { border-color: var(--sky); border-style: dashed; }
+.how-hop--gpu { border-color: var(--teal); }
+
+.how-hop-arrow { color: var(--ink-soft); font-size: 1.15rem; line-height: 1; }
+
+/* ---- responsive ---- */
+
+@media (max-width: 720px) {
+  .how-steps { flex-direction: column; align-items: center; }
+  .how-arrow { transform: rotate(90deg); }
+  .how-step { max-width: 340px; width: 100%; }
+}
+
+@media (max-width: 560px) {
+  .how-link-text { display: none; }
+  .how-link { padding: 0 12px; }
+  .how-hop { flex: 1 1 40%; }
+  .how-hop-arrow { display: none; }
+}

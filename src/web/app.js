@@ -47,7 +47,7 @@
       thinking:          'Thinking…',
       speaking:          'Speaking…',
       youSaid:           'You said:',
-      replay:            '🔁 Hear that again',
+      replay:            '🔁 Hear the response again',
       stopPlayback:      '⏹ Stop',
       keyboardHint:      'Tip: hold Space or Enter to talk.',
       talkAria:          'Hold to talk. Press and hold while you speak, then let go to send.',
@@ -90,7 +90,22 @@
       howHop3:           'University computer',
       howHop3Note:       'a big GPU does the thinking',
       howHop4:           'This laptop',
-      howHop4Note:       'you hear the answer'
+      howHop4Note:       'you hear the answer',
+      emotionBreakdownTitle: 'What I heard in your voice',
+      emotionNeutral:    'neutral',
+      emotionHappy:      'happy',
+      emotionSad:        'sad',
+      emotionAngry:      'angry',
+      emotionFearful:    'scared',
+      emotionDisgusted:  'disgusted',
+      emotionSurprised:  'surprised',
+      emotionCalm:       'calm',
+      ideasBtn:          '💡 Give me something to say',
+      ideasTitle:        'Something you can say',
+      ideasOther:        '🎲 Show other sentences',
+      ideasCloseAria:    'Close',
+      sayPromptLabel:    'Try saying:',
+      sayPromptCloseAria: 'Remove this sentence'
     },
     nl: {
       subtitle:          'Praat tegen de computer — hij hoort hoe je je voelt!',
@@ -102,7 +117,7 @@
       thinking:          'Aan het denken…',
       speaking:          'Aan het praten…',
       youSaid:           'Jij zei:',
-      replay:            '🔁 Nog een keer',
+      replay:            '🔁 Luister nog eens naar het antwoord',
       stopPlayback:      '⏹ Stop',
       keyboardHint:      'Tip: houd de spatiebalk of Enter ingedrukt om te praten.',
       talkAria:          'Houd ingedrukt om te praten. Houd de knop vast tijdens het praten en laat los om te versturen.',
@@ -145,7 +160,22 @@
       howHop3:           'Computer van de universiteit',
       howHop3Note:       'een grote GPU doet het denkwerk',
       howHop4:           'Deze laptop',
-      howHop4Note:       'jij hoort het antwoord'
+      howHop4Note:       'jij hoort het antwoord',
+      emotionBreakdownTitle: 'Wat ik hoorde in je stem',
+      emotionNeutral:    'neutraal',
+      emotionHappy:      'blij',
+      emotionSad:        'verdrietig',
+      emotionAngry:      'boos',
+      emotionFearful:    'bang',
+      emotionDisgusted:  'vies',
+      emotionSurprised:  'verrast',
+      emotionCalm:       'kalm',
+      ideasBtn:          '💡 Geef me iets om te zeggen',
+      ideasTitle:        'Iets wat je kunt zeggen',
+      ideasOther:        '🎲 Laat andere zinnen zien',
+      ideasCloseAria:    'Sluiten',
+      sayPromptLabel:    'Zeg eens:',
+      sayPromptCloseAria: 'Deze zin verwijderen'
     }
   };
 
@@ -167,6 +197,131 @@
   var EMOTION_ALIAS = {
     neutraal: 'neutral', blij: 'happy', verdrietig: 'sad', boos: 'angry',
     bang: 'fearful', walgend: 'disgusted', verbaasd: 'surprised', kalm: 'calm'
+  };
+
+  // Canonical (backend) emotion class -> i18n key for its localized name.
+  var EMOTION_STRING_KEYS = {
+    neutral:   'emotionNeutral',
+    happy:     'emotionHappy',
+    sad:       'emotionSad',
+    angry:     'emotionAngry',
+    fearful:   'emotionFearful',
+    disgusted: 'emotionDisgusted',
+    surprised: 'emotionSurprised',
+    calm:      'emotionCalm'
+  };
+
+  /* ---------------------------------------------------------
+     Example sentences ("Give me something to say")
+     Plain data, one list per language. Written to cover all eight
+     emotion classes so the recognizer gets a varied workout.
+     --------------------------------------------------------- */
+
+  var EXAMPLES = {
+    en: [
+      'I just won a gold medal!',
+      'Today is my birthday and I got a bike!',
+      'My dog learned a new trick!',
+      'I got all the answers right!',
+      'We are going to the beach this weekend!',
+      'My best friend is coming over to play!',
+      'I found a shiny coin on the ground!',
+      'This ice cream tastes amazing!',
+      'My balloon flew away into the sky.',
+      'My best friend is moving to another town.',
+      'I dropped my favorite toy in the water.',
+      'I miss my grandmother.',
+      'Nobody wanted to play with me today.',
+      'My pet fish is not swimming anymore.',
+      'I broke my favorite cup.',
+      'Someone took my seat without asking!',
+      'My little brother scribbled on my drawing!',
+      'I have to wait in line again!',
+      'That is not fair at all!',
+      'Someone stepped on my new shoes!',
+      'My sister hid my favorite game!',
+      'Wow, I did not see that coming!',
+      'There is a giant spider on the wall!',
+      'I thought it was raining, but it is snowing!',
+      'My teacher gave us no homework today!',
+      'The magician made the rabbit disappear!',
+      'I just saw a shooting star!',
+      'There is a loud thunderstorm outside.',
+      'I think I saw something move in the dark.',
+      'A big dog barked right next to me.',
+      'I am a little afraid of the dark basement.',
+      'The roller coaster goes upside down!',
+      'I heard a strange noise in the attic.',
+      'This milk smells really bad.',
+      'I found something slimy under the rock.',
+      'My soup has a hair in it.',
+      'That garbage bin is stinky.',
+      'I bit into a sour lemon.',
+      'The frog was covered in slime.',
+      'Today is Tuesday and it is cloudy.',
+      'I am reading a book about space.',
+      'I walked to school this morning.',
+      'My favorite color is blue.',
+      'I ate a sandwich for lunch.',
+      'The sky is grey and calm today.',
+      'I am listening to quiet music.',
+      'The cat is sleeping on the sofa.',
+      'I have a pencil and a piece of paper.',
+      'We planted seeds in the garden.',
+      'I am sitting by the window.'
+    ],
+    nl: [
+      'Ik heb net een gouden medaille gewonnen!',
+      'Vandaag ben ik jarig en ik heb een fiets gekregen!',
+      'Mijn hond heeft een nieuwe truc geleerd!',
+      'Ik had alle antwoorden goed!',
+      'We gaan dit weekend naar het strand!',
+      'Mijn beste vriend komt bij me spelen!',
+      'Ik vond een glimmend muntje op de grond!',
+      'Dit ijsje smaakt heerlijk!',
+      'Mijn ballon is de lucht in gevlogen.',
+      'Mijn beste vriend verhuist naar een andere stad.',
+      'Ik liet mijn lievelingsspeelgoed in het water vallen.',
+      'Ik mis mijn oma.',
+      'Niemand wilde vandaag met mij spelen.',
+      'Mijn goudvis zwemt niet meer.',
+      'Ik heb mijn lievelingsbeker gebroken.',
+      'Iemand pakte mijn stoel af zonder te vragen!',
+      'Mijn kleine broertje heeft op mijn tekening gekrabbeld!',
+      'Ik moet weer in de rij wachten!',
+      'Dat is helemaal niet eerlijk!',
+      'Iemand stond op mijn nieuwe schoenen!',
+      'Mijn zus heeft mijn lievelingsspel verstopt!',
+      'Wauw, dat had ik echt niet verwacht!',
+      'Er zit een enorme spin op de muur!',
+      'Ik dacht dat het regende, maar het sneeuwt!',
+      'Mijn juf gaf ons vandaag geen huiswerk!',
+      'De goochelaar liet het konijn verdwijnen!',
+      'Ik zag net een vallende ster!',
+      'Buiten is er een harde onweersbui.',
+      'Ik denk dat ik iets zag bewegen in het donker.',
+      'Een grote hond blafte vlak naast me.',
+      'Ik ben een beetje bang voor de donkere kelder.',
+      'De achtbaan gaat ondersteboven!',
+      'Ik hoorde een raar geluid op zolder.',
+      'Deze melk ruikt echt niet lekker.',
+      'Ik vond iets glibberigs onder de steen.',
+      'Er zit een haar in mijn soep.',
+      'Die vuilnisbak stinkt.',
+      'Ik beet in een zure citroen.',
+      'De kikker zat helemaal onder het slijm.',
+      'Vandaag is het dinsdag en het is bewolkt.',
+      'Ik lees een boek over de ruimte.',
+      'Ik liep vanochtend naar school.',
+      'Mijn lievelingskleur is blauw.',
+      'Ik at een boterham als lunch.',
+      'De lucht is grijs en rustig vandaag.',
+      'Ik luister naar rustige muziek.',
+      'De kat slaapt op de bank.',
+      'Ik heb een potlood en een vel papier.',
+      'We hebben zaadjes in de tuin geplant.',
+      'Ik zit bij het raam.'
+    ]
   };
 
   /* ---------------------------------------------------------
@@ -197,6 +352,18 @@
   var serverStatusText    = document.getElementById('serverStatusText');
   var howOpen             = document.getElementById('howOpen');
   var howBack             = document.getElementById('howBack');
+
+  var emotionBreakdown    = document.getElementById('emotionBreakdown');
+  var emotionList         = document.getElementById('emotionList');
+  var sayPrompt           = document.getElementById('sayPrompt');
+  var sayPromptText       = document.getElementById('sayPromptText');
+  var sayPromptClose      = document.getElementById('sayPromptClose');
+  var ideasBtn            = document.getElementById('ideasBtn');
+  var ideasModal          = document.getElementById('ideasModal');
+  var ideasBackdrop       = document.getElementById('ideasBackdrop');
+  var ideasClose          = document.getElementById('ideasClose');
+  var ideasList           = document.getElementById('ideasList');
+  var ideasMore           = document.getElementById('ideasMore');
 
   var langButtons = Array.prototype.slice.call(document.querySelectorAll('[data-lang]'));
   var choiceButtons = Array.prototype.slice.call(document.querySelectorAll('.choice'));
@@ -293,6 +460,8 @@
       btn.disabled = phase === 'intro';
     });
 
+    ideasBtn.disabled = phase === 'recording' || phase === 'thinking' || phase === 'intro' || micPending;
+
     if (phase === 'idle' && serverStatus.classList.contains('is-offline')) {
       showHint(s.serverOffline);
     }
@@ -306,6 +475,8 @@
   function clearResult() {
     result.hidden = true;
     emotionBadge.hidden = true;
+    emotionBreakdown.hidden = true;
+    emotionList.textContent = '';
     transcriptionText.textContent = '';
   }
 
@@ -388,6 +559,11 @@
     });
 
     errorRetry.textContent = strings.tryAgain;
+    // Re-localize dynamic (non data-i18n) content that follows the language.
+    hideSayPrompt();
+    if (!result.hidden && lastResult) {
+      updateEmotionDisplay(lastResult.emotion, lastResult.score, lastResult.dist);
+    }
     setServerStatus(serverState);
     render();
   }
@@ -490,7 +666,8 @@
           blob: blob,
           transcription: decodeHeaderValue(response.headers.get('transcription')),
           emotion: decodeHeaderValue(response.headers.get('emotion')),
-          score: decodeHeaderValue(response.headers.get('emotion_score'))
+          score: decodeHeaderValue(response.headers.get('emotion_score')),
+          dist: decodeHeaderValue(response.headers.get('emotion_dist'))
         };
       }, function (cause) {
         var readErr = new Error('Could not read the server response');
@@ -811,8 +988,36 @@
     var text = res.transcription || strings.noSpeech;
     transcriptionText.textContent = '\u201c' + text + '\u201d';
     result.hidden = false;
-    updateEmotionBadge(res.emotion, res.score);
+    updateEmotionDisplay(res.emotion, res.score, res.dist);
     render();
+  }
+
+  function emotionName(canonical) {
+    var key = EMOTION_STRING_KEYS[canonical];
+    if (key && strings[key]) return strings[key];
+    return canonical;
+  }
+
+  function canonicalEmotion(raw) {
+    var key = String(raw == null ? '' : raw).toLowerCase().trim();
+    var canonical = EMOTION_ALIAS[key] || key;
+    if (canonical === 'disgust') canonical = 'disgusted';
+    if (canonical === 'fear') canonical = 'fearful';
+    return canonical;
+  }
+
+  function emotionLook(canonical) {
+    return EMOTION_LOOK[canonical] || { emoji: '🙂', color: '#6f7683', bg: '#f1f3f6' };
+  }
+
+  function updateEmotionDisplay(emotion, score, dist) {
+    // With a full distribution, show the breakdown (and drop the single badge);
+    // without one (older backend), fall back to the original single badge.
+    if (updateEmotionBreakdown(dist)) {
+      emotionBadge.hidden = true;
+    } else {
+      updateEmotionBadge(emotion, score);
+    }
   }
 
   function updateEmotionBadge(emotion, score) {
@@ -821,11 +1026,10 @@
       return;
     }
 
-    var key = String(emotion).toLowerCase().trim();
-    var canonical = EMOTION_ALIAS[key] || key;
-    var look = EMOTION_LOOK[canonical] || { emoji: '🙂', color: '#6f7683', bg: '#f1f3f6' };
+    var canonical = canonicalEmotion(emotion);
+    var look = emotionLook(canonical);
 
-    var label = look.emoji + ' ' + key;
+    var label = look.emoji + ' ' + emotionName(canonical);
     var numeric = parseInt(score, 10);
     if (!isNaN(numeric)) {
       if (numeric < 0) numeric = 0;
@@ -837,6 +1041,79 @@
     emotionBadge.style.color = look.color;
     emotionBadge.style.background = look.bg;
     emotionBadge.hidden = false;
+  }
+
+  // Parse "happy:85|sad:10|..." into [{ label, percent }], most certain first.
+  function parseEmotionDist(raw) {
+    if (!raw) return [];
+    var parts = String(raw).split('|');
+    var parsed = [];
+    for (var i = 0; i < parts.length; i++) {
+      var segment = parts[i].trim();
+      if (!segment) continue;
+      var colon = segment.lastIndexOf(':');
+      if (colon <= 0) continue;
+      var label = segment.slice(0, colon).trim();
+      var percent = parseInt(segment.slice(colon + 1), 10);
+      if (!label || isNaN(percent)) continue;
+      if (percent < 0) percent = 0;
+      if (percent > 100) percent = 100;
+      parsed.push({ label: label, percent: percent });
+    }
+    parsed.sort(function (a, b) { return b.percent - a.percent; });
+    return parsed;
+  }
+
+  function buildEmotionRow(item, isTop) {
+    var canonical = canonicalEmotion(item.label);
+    var look = emotionLook(canonical);
+
+    var row = document.createElement('li');
+    row.className = 'emotion-row' + (isTop ? ' is-top' : '');
+    row.style.setProperty('--emo-color', look.color);
+    row.style.setProperty('--emo-bg', look.bg);
+    row.style.setProperty('--emo-percent', item.percent + '%');
+
+    var emoji = document.createElement('span');
+    emoji.className = 'emotion-emoji';
+    emoji.setAttribute('aria-hidden', 'true');
+    emoji.textContent = look.emoji;
+
+    var name = document.createElement('span');
+    name.className = 'emotion-name';
+    name.textContent = emotionName(canonical);
+
+    var track = document.createElement('span');
+    track.className = 'emotion-track';
+    var fill = document.createElement('span');
+    fill.className = 'emotion-fill';
+    track.appendChild(fill);
+
+    var percent = document.createElement('span');
+    percent.className = 'emotion-percent';
+    percent.textContent = item.percent + '%';
+
+    row.appendChild(emoji);
+    row.appendChild(name);
+    row.appendChild(track);
+    row.appendChild(percent);
+    return row;
+  }
+
+  function updateEmotionBreakdown(rawDist) {
+    var parsed = parseEmotionDist(rawDist);
+    if (!parsed.length) {
+      emotionBreakdown.hidden = true;
+      emotionList.textContent = '';
+      return false;
+    }
+
+    emotionList.textContent = '';
+    for (var i = 0; i < parsed.length; i++) {
+      emotionList.appendChild(buildEmotionRow(parsed[i], i === 0));
+    }
+    emotionBreakdown.hidden = false;
+    return true;
   }
 
   function handleActionError(err, fallbackMessage) {
@@ -1254,6 +1531,7 @@
   }
 
   function shouldIgnoreKey(event) {
+    if (!ideasModal.hidden) return true;                       // idea panel is open
     if (screenMain.hidden) return true;                        // language / how screen
     if (event.ctrlKey || event.metaKey || event.altKey) return true;  // browser shortcuts
     var el = event.target;
@@ -1326,6 +1604,82 @@
   howBack.addEventListener('click', function () {
     showScreen(howReturn);
     if (window.scrollTo) window.scrollTo(0, 0);
+  });
+
+  /* ---------------------------------------------------------
+     Example sentences ("Give me something to say")
+     --------------------------------------------------------- */
+
+  function pickRandomSentences(list, count) {
+    var pool = list.slice();
+    var picked = [];
+    var take = Math.min(count, pool.length);
+    for (var i = 0; i < take; i++) {
+      var index = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(index, 1)[0]);
+    }
+    return picked;
+  }
+
+  function renderIdeas() {
+    var list = EXAMPLES[currentLang] || EXAMPLES.en;
+    var picked = pickRandomSentences(list, 5);
+
+    ideasList.textContent = '';
+    picked.forEach(function (sentence) {
+      var item = document.createElement('li');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ideas-item';
+      button.textContent = sentence;
+      button.addEventListener('click', function () { chooseSentence(sentence); });
+      item.appendChild(button);
+      ideasList.appendChild(item);
+    });
+  }
+
+  function openIdeas() {
+    if (phase === 'recording' || phase === 'intro' || phase === 'thinking' || micPending) return;
+    if (!ideasModal.hidden) return;
+
+    renderIdeas();
+    ideasModal.hidden = false;
+    document.body.classList.add('has-modal');
+    try { ideasClose.focus(); } catch (e) { /* ignore */ }
+  }
+
+  function closeIdeas() {
+    if (ideasModal.hidden) return;
+    ideasModal.hidden = true;
+    document.body.classList.remove('has-modal');
+    if (ideasBtn && ideasBtn.focus) {
+      try { ideasBtn.focus(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function chooseSentence(sentence) {
+    sayPromptText.textContent = sentence;
+    sayPrompt.hidden = false;
+    restartAnimation(sayPrompt);
+    closeIdeas();
+  }
+
+  function hideSayPrompt() {
+    sayPrompt.hidden = true;
+    sayPromptText.textContent = '';
+  }
+
+  ideasBtn.addEventListener('click', openIdeas);
+  ideasClose.addEventListener('click', closeIdeas);
+  ideasBackdrop.addEventListener('click', closeIdeas);
+  ideasMore.addEventListener('click', renderIdeas);
+  sayPromptClose.addEventListener('click', hideSayPrompt);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !ideasModal.hidden) {
+      event.preventDefault();
+      closeIdeas();
+    }
   });
 
   /* ---------------------------------------------------------

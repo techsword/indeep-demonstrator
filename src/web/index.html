@@ -99,6 +99,14 @@
       <p class="hint" id="hint" role="status" aria-live="polite"></p>
       <p class="keyboard-hint" id="keyboardHint" data-i18n="keyboardHint">Tip: hold Space or Enter to talk.</p>
 
+      <div class="say-prompt" id="sayPrompt" hidden>
+        <span class="say-prompt-label" data-i18n="sayPromptLabel">Try saying:</span>
+        <p class="say-prompt-text" id="sayPromptText"></p>
+        <button type="button" class="say-prompt-close" id="sayPromptClose" data-i18n-aria="sayPromptCloseAria" aria-label="Remove this sentence">&#10005;</button>
+      </div>
+
+      <button type="button" class="ideas-btn" id="ideasBtn" data-i18n="ideasBtn">&#128161; Give me something to say</button>
+
       <div class="result" id="result" hidden>
         <div class="bubble">
           <span class="bubble-label" data-i18n="youSaid">You said:</span>
@@ -106,8 +114,12 @@
         </div>
         <div class="result-side">
           <span class="emotion-badge" id="emotionBadge" hidden></span>
-          <button type="button" class="replay-btn" id="replayBtn" data-i18n="replay">&#128257; Hear that again</button>
+          <button type="button" class="replay-btn" id="replayBtn" data-i18n="replay">&#128257; Hear the response again</button>
           <button type="button" class="replay-btn stop-btn" id="stopPlaybackBtn" data-i18n="stopPlayback" hidden>&#9209; Stop</button>
+        </div>
+        <div class="emotion-breakdown" id="emotionBreakdown" hidden>
+          <p class="emotion-breakdown-title" data-i18n="emotionBreakdownTitle">What I heard in your voice</p>
+          <ul class="emotion-list" id="emotionList"></ul>
         </div>
       </div>
     </section>
@@ -200,6 +212,18 @@
   <span class="error-icon" id="errorIcon" aria-hidden="true">&#127908;</span>
   <p class="error-text" id="errorText"></p>
   <button type="button" class="error-btn" id="errorRetry" data-i18n="tryAgain">Try again</button>
+</div>
+
+<div class="ideas-modal" id="ideasModal" hidden>
+  <div class="ideas-backdrop" id="ideasBackdrop" aria-hidden="true"></div>
+  <div class="ideas-panel" role="dialog" aria-modal="true" aria-labelledby="ideasTitle">
+    <div class="ideas-head">
+      <h2 class="ideas-title" id="ideasTitle" data-i18n="ideasTitle">Something you can say</h2>
+      <button type="button" class="ideas-close" id="ideasClose" data-i18n-aria="ideasCloseAria" aria-label="Close">&#10005;</button>
+    </div>
+    <ul class="ideas-list" id="ideasList"></ul>
+    <button type="button" class="ideas-more" id="ideasMore" data-i18n="ideasOther">&#127922; Show other sentences</button>
+  </div>
 </div>
 
 <noscript>

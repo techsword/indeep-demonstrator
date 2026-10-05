@@ -91,6 +91,11 @@ class RAVDESS(SERModel):
 
         Args:
             audio: The user utterance to be recognized.
+
+        Returns:
+            tuple[str, int, str, dict[str, int]]: The top emotion label, its
+            score as a percentage, the least likely emotion label, and the
+            full ordered mapping of every class label to its percentage score.
         """
 
         waveform, sample_rate = torchaudio.load(str(audio))
@@ -108,7 +113,11 @@ class RAVDESS(SERModel):
         label = "disgusted" if label == "disgust" else label
         score = int(result[0]['score'] * 100)
         last_label = "disgusted" if result[-1]['label'] == "disgust" else result[-1]['label']
-        return label, score, last_label
+        distribution = {
+            ("disgusted" if r['label'] == "disgust" else r['label']): int(r['score'] * 100)
+            for r in result
+        }
+        return label, score, last_label, distribution
 
     def warmup(self):
         """Loads the SER model into memory so that it can be swiftly accessed during actual inference."""

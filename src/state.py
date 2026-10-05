@@ -253,11 +253,12 @@ class RecognizeEmo(AbstractState):
 
         print("I'm recognizing the emotion...")
         
-        emo_label, emo_score, oth_label = context.ser_model.recognize(context.latest_user_utterance)
+        emo_label, emo_score, oth_label, emo_distribution = context.ser_model.recognize(context.latest_user_utterance)
         
         context.latest_emo_label = emo_label
         context.latest_emo_score = num2words(emo_score)
         context.latest_emo_score_numeric = emo_score
+        context.latest_emo_distribution = emo_distribution
         context.latest_other_label = oth_label if context.tts_model.name == "parler" else "calm" if emo_label == "neutral" else "neutral"
         if context.TTS_language == "nl":
             context.latest_emo_score = num2words(emo_score, lang="nl")
@@ -448,6 +449,7 @@ class RESTResponse(AbstractState):
                 request["transcription"] = context.latest_transcription
                 request["emotion"] = getattr(context, "latest_emo_label", "") or ""
                 request["emotion_score"] = getattr(context, "latest_emo_score_numeric", "") or ""
+                request["emotion_dist"] = getattr(context, "latest_emo_distribution", {}) or {}
         except Exception as exc:  # pragma: no cover - defensive path for a live demo
             if request is not None:
                 request["error"] = str(exc)

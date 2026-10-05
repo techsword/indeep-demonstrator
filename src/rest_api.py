@@ -41,6 +41,26 @@ def _decode_header_value(value: str | None) -> str:
     return unquote(value)
 
 
+def _encode_emotion_distribution(distribution: object) -> str:
+    """Encode an emotion distribution as a compact percent-encoded header value.
+
+    Accepts either an ordered mapping of ``label -> score`` or a list of
+    ``{"label": ..., "score": ...}`` entries, and renders it as
+    ``happy:85|sad:10|...`` before percent-encoding it for transport.
+    """
+
+    if not distribution:
+        return ""
+
+    if isinstance(distribution, dict):
+        items = distribution.items()
+    else:
+        items = ((entry.get("label"), entry.get("score")) for entry in distribution)
+
+    compact = "|".join(f"{label}:{int(score)}" for label, score in items)
+    return _encode_header_value(compact)
+
+
 def send_user_speech_request(client: demonstrator.DemonstratorClient) -> tuple[float, str]:
     """Send a user utterance to the server and store the returned TTS audio.
 
@@ -175,5 +195,6 @@ def _API_user_speech(
             "transcription": _encode_header_value(request.get("transcription", "")),
             "emotion": _encode_header_value(request.get("emotion", "")),
             "emotion_score": _encode_header_value(request.get("emotion_score", "")),
+            "emotion_dist": _encode_emotion_distribution(request.get("emotion_dist")),
         },
     )

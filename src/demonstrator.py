@@ -33,6 +33,7 @@ class Demonstrator(ABC):
         self.latest_tts_audio_length: float
         self.latest_emo_label: str
         self.latest_emo_score: float
+        self.latest_emo_distribution: dict[str, int] = {}
         self.latest_other_label: str
         self.TTS_language: str = None
         self.read_intro: bool = False
